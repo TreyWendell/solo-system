@@ -2,6 +2,8 @@
 
 A Solo Leveling-inspired RPG habit tracker. Complete daily quests to earn XP, level up your stats, and climb the ranks from E to S.
 
+**[Live Demo](https://solo-system-git-master-trey-wendell-s-projects.vercel.app)**
+
 ## Features
 
 - **Daily Quests** — Complete quests each day to earn XP. Quests reset at midnight.
