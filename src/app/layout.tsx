@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "SYSTEM — Self Improvement RPG",
-    template: "%s | SYSTEM",
+    default: "Ascend — Self Improvement RPG",
+    template: "%s | Ascend",
   },
   description:
     "Gamify your self-improvement journey with RPG-style progression, daily quests, and stat tracking inspired by Solo Leveling.",

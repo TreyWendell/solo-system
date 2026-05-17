@@ -48,7 +48,7 @@ export function Sidebar({ user, unreadCount = 0 }: SidebarProps) {
             <Zap className="h-4 w-4 text-[#00d4ff]" />
           </div>
           <span className="text-lg font-black tracking-[0.2em] text-[#e2e8f0] glow-text-cyan">
-            HOME
+            ASCEND
           </span>
         </Link>
       </div>

@@ -51,7 +51,7 @@ export function LevelUpOverlay({ show, level, rank, onClose }: LevelUpOverlayPro
               transition={{ delay: 0.2 }}
               className="text-[#00d4ff] text-sm font-semibold tracking-[0.3em] uppercase mb-4 glow-text-cyan"
             >
-              [ SYSTEM NOTIFICATION ]
+              [ ASCEND NOTIFICATION ]
             </motion.p>
 
             {/* Level display */}

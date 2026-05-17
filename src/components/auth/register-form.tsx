@@ -63,7 +63,7 @@ export function RegisterForm() {
       <div className="mb-8 text-center lg:text-left">
         <div className="flex items-center gap-2 mb-6 lg:hidden justify-center">
           <Zap className="h-6 w-6 text-[#00d4ff]" />
-          <span className="text-xl font-black tracking-[0.3em] text-[#e2e8f0]">SYSTEM</span>
+          <span className="text-xl font-black tracking-[0.3em] text-[#e2e8f0]">ASCEND</span>
         </div>
         <h2 className="text-3xl font-black text-[#e2e8f0] mb-2">Create Account</h2>
         <p className="text-[#64748b]">Begin your ascent, Hunter.</p>

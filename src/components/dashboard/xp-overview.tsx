@@ -102,7 +102,7 @@ export function XpOverview({ user }: XpOverviewProps) {
       {/* System message ticker */}
       <div className="mt-5 pt-4 border-t border-[#1e2d4a] flex items-center gap-2">
         <span className="text-xs font-semibold tracking-[0.15em] text-[#00d4ff] flex-shrink-0">
-          SYSTEM:
+          ASCEND:
         </span>
         <motion.p
           initial={{ opacity: 0 }}

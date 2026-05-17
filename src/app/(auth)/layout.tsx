@@ -33,7 +33,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               <Zap className="h-5 w-5 text-[#00d4ff]" />
             </div>
             <span className="text-2xl font-black tracking-[0.3em] text-[#e2e8f0] glow-text-cyan">
-              SYSTEM
+              ASCEND
             </span>
           </div>
 
