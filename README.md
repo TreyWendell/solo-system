@@ -4,6 +4,11 @@ A Solo Leveling-inspired RPG habit tracker. Complete daily quests to earn XP, le
 
 **[Live Demo](https://solo-system-git-master-trey-wendell-s-projects.vercel.app)**
 
+## Screenshots
+
+| Login | Dashboard | Stats |
+|-------|-----------|-------|
+| ![Login](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) | ![Stats](screenshots/stats.png) |
 
 ## Features
 
