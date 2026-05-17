@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { Bot } from "lucide-react";
 import { getProgressCoaching } from "@/actions/ai";
 
@@ -6,7 +7,11 @@ interface AiCoachCardProps {
 }
 
 export async function AiCoachCard({ userId }: AiCoachCardProps) {
-  const coaching = await getProgressCoaching(userId);
+  const coaching = await unstable_cache(
+    () => getProgressCoaching(userId),
+    [`coach-${userId}`],
+    { revalidate: 3600 }
+  )();
 
   return (
     <div className="glass rounded-xl p-5 border border-[#8b5cf6]/30 relative overflow-hidden">
