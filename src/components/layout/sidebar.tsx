@@ -27,7 +27,7 @@ const NAV_ITEMS = [
   { href: "/social", label: "Social", icon: Users },
   { href: "/profile", label: "Profile", icon: User },
   { href: "/notifications", label: "Alerts", icon: Bell },
-  { href: "/admin", label: "Admin", icon: Settings2 },
+  { href: "/admin", label: "Admin", icon: Settings2, adminOnly: true },
 ];
 
 interface SidebarProps {
@@ -37,6 +37,7 @@ interface SidebarProps {
 
 export function Sidebar({ user, unreadCount = 0 }: SidebarProps) {
   const pathname = usePathname();
+  const visibleItems = NAV_ITEMS.filter((item) => !item.adminOnly || user.isAdmin);
 
   return (
     <aside className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 glass border-r border-[#1e2d4a] z-40">
@@ -76,7 +77,7 @@ export function Sidebar({ user, unreadCount = 0 }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto p-3 space-y-1">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {visibleItems.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(href + "/");
           return (
             <Link key={href} href={href}>

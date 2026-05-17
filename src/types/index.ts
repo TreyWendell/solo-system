@@ -40,6 +40,7 @@ export type PublicUser = Pick<
   | "createdAt"
   | "bio"
   | "isPublic"
+  | "isAdmin"
 >;
 
 export type UserWithStats = PublicUser & {

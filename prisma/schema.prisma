@@ -65,6 +65,8 @@ model User {
   totalXp       Int       @default(0)
   rank          Rank      @default(E)
 
+  isAdmin        Boolean  @default(false)
+
   currentStreak  Int      @default(0)
   longestStreak  Int      @default(0)
   lastActiveDate DateTime?

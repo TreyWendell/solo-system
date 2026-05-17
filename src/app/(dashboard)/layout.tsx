@@ -28,6 +28,7 @@ export default async function DashboardLayout({
       createdAt: true,
       bio: true,
       isPublic: true,
+      isAdmin: true,
       _count: { select: { notifications: { where: { read: false } } } },
     },
   });

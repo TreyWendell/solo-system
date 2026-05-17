@@ -6,9 +6,14 @@ import { db } from "@/lib/db";
 import { levelFromXp, xpForLevel } from "@/lib/constants";
 import type { QuestCategory, Difficulty, StatType, Prisma } from "@prisma/client";
 
-async function requireAuth() {
+async function requireAdmin() {
   const session = await auth();
   if (!session?.user?.id) return null;
+  const user = await db.user.findUnique({
+    where: { id: session.user.id },
+    select: { isAdmin: true },
+  });
+  if (!user?.isAdmin) return null;
   return session.user.id;
 }
 
@@ -24,7 +29,7 @@ export interface TemplateFormData {
 }
 
 export async function createQuestTemplate(data: TemplateFormData) {
-  const userId = await requireAuth();
+  const userId = await requireAdmin();
   if (!userId) return { success: false as const, error: "Unauthorized" };
 
   await db.questTemplate.create({
@@ -47,7 +52,7 @@ export async function createQuestTemplate(data: TemplateFormData) {
 }
 
 export async function updateQuestTemplate(id: string, data: TemplateFormData) {
-  const userId = await requireAuth();
+  const userId = await requireAdmin();
   if (!userId) return { success: false as const, error: "Unauthorized" };
 
   await db.questTemplate.update({
@@ -70,7 +75,7 @@ export async function updateQuestTemplate(id: string, data: TemplateFormData) {
 }
 
 export async function deleteQuestTemplate(id: string) {
-  const userId = await requireAuth();
+  const userId = await requireAdmin();
   if (!userId) return { success: false as const, error: "Unauthorized" };
 
   await db.questTemplate.delete({ where: { id } });
@@ -81,7 +86,7 @@ export async function deleteQuestTemplate(id: string) {
 }
 
 export async function grantStatXp(statType: StatType, amount: number, reason: string) {
-  const userId = await requireAuth();
+  const userId = await requireAdmin();
   if (!userId) return { success: false as const, error: "Unauthorized" };
 
   const stat = await db.userStat.findUnique({
@@ -108,5 +113,21 @@ export async function grantStatXp(statType: StatType, amount: number, reason: st
   revalidatePath("/admin");
   revalidatePath("/dashboard");
   revalidatePath("/stats");
+  return { success: true as const };
+}
+
+export async function setUserAdmin(username: string, isAdmin: boolean) {
+  const adminId = await requireAdmin();
+  if (!adminId) return { success: false as const, error: "Unauthorized" };
+
+  const target = await db.user.findUnique({
+    where: { username },
+    select: { id: true },
+  });
+  if (!target) return { success: false as const, error: "User not found" };
+
+  await db.user.update({ where: { username }, data: { isAdmin } });
+
+  revalidatePath("/admin");
   return { success: true as const };
 }
