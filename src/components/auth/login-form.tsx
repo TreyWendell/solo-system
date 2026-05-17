@@ -13,7 +13,31 @@ import { toast } from "@/components/ui/toaster";
 export function LoginForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  async function handleDemoLogin() {
+    setDemoLoading(true);
+    setErrors({});
+    try {
+      const result = await signIn("credentials", {
+        email: "demo@demo.com",
+        password: "demodemo",
+        redirect: false,
+      });
+      if (result?.error) {
+        setErrors({ general: "Demo account unavailable. Please try again later." });
+      } else {
+        toast.success("Welcome, Hunter. This is a demo account.");
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch {
+      setErrors({ general: "Something went wrong. Please try again." });
+    } finally {
+      setDemoLoading(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -59,6 +83,26 @@ export function LoginForm() {
         </div>
         <h2 className="text-3xl font-black text-[#e2e8f0] mb-2">Welcome back</h2>
         <p className="text-[#64748b]">Continue your journey, Hunter.</p>
+      </div>
+
+      {/* Demo access */}
+      <button
+        type="button"
+        onClick={handleDemoLogin}
+        disabled={demoLoading || loading}
+        className="w-full mb-6 flex items-center justify-center gap-2 px-4 py-3 rounded border border-[#00d4ff]/30 bg-[#00d4ff]/5 text-sm font-semibold text-[#00d4ff] hover:bg-[#00d4ff]/10 hover:border-[#00d4ff]/60 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <Zap className="h-4 w-4" />
+        {demoLoading ? "Entering system..." : "Try Demo Account"}
+      </button>
+
+      <div className="relative mb-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-[#1e2d4a]" />
+        </div>
+        <div className="relative flex justify-center text-xs">
+          <span className="px-3 bg-[#050810] text-[#64748b] uppercase tracking-wider">or sign in</span>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
