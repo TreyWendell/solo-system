@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { startOfDay, endOfDay } from "@/lib/utils";
@@ -10,6 +11,7 @@ import { WeeklyChart } from "@/components/dashboard/weekly-chart";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { QuestList } from "@/components/quests/quest-list";
 import { AchievementGrid } from "@/components/achievements/achievement-grid";
+import { AiCoachCard, AiCoachSkeleton } from "@/components/dashboard/ai-coach-card";
 import { subDays, startOfDay as dfnsStartOfDay } from "date-fns";
 import type { PublicUser } from "@/types";
 
@@ -160,6 +162,11 @@ export default async function DashboardPage() {
 
         {/* Right column */}
         <div className="space-y-6">
+          {/* AI Coach */}
+          <Suspense fallback={<AiCoachSkeleton />}>
+            <AiCoachCard userId={userId} />
+          </Suspense>
+
           {/* Weekly chart */}
           <WeeklyChart data={weeklyXp} />
 

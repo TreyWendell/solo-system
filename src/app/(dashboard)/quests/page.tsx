@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { startOfDay, endOfDay } from "@/lib/utils";
 import { assignTodayQuests } from "@/actions/quests";
 import { QuestList } from "@/components/quests/quest-list";
+import { GenerateQuestButton } from "@/components/quests/generate-quest-button";
 import { CATEGORY_META } from "@/lib/constants";
 import type { DailyQuest, QuestCategory } from "@prisma/client";
 
@@ -38,13 +39,16 @@ export default async function QuestsPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-black text-[#e2e8f0]">Daily Quests</h1>
-        <p className="text-sm text-[#64748b] mt-1">
-          {new Date().toLocaleDateString("en-US", {
-            weekday: "long", month: "long", day: "numeric",
-          })}
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-black text-[#e2e8f0]">Daily Quests</h1>
+          <p className="text-sm text-[#64748b] mt-1">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long", month: "long", day: "numeric",
+            })}
+          </p>
+        </div>
+        <GenerateQuestButton />
       </div>
 
       <div className="grid grid-cols-3 gap-2 sm:gap-4">
