@@ -1,0 +1,340 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── User ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  passwordHash  String?
+  username      String    @unique
+  displayName   String?
+  avatarUrl     String?
+  bio           String?
+  isPublic      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  level         Int       @default(1)
+  totalXp       Int       @default(0)
+  rank          Rank      @default(E)
+
+  currentStreak  Int      @default(0)
+  longestStreak  Int      @default(0)
+  lastActiveDate DateTime?
+
+  accounts          Account[]
+  sessions          Session[]
+  stats             UserStat[]
+  questTemplates    QuestTemplate[]
+  dailyQuests       DailyQuest[]
+  achievements      UserAchievement[]
+  xpHistory         XpHistory[]
+  activityLog       ActivityLog[]
+  notifications     Notification[]
+  friendsInitiated  Friendship[]    @relation("FriendshipInitiator")
+  friendsReceived   Friendship[]    @relation("FriendshipReceiver")
+
+  @@index([username])
+  @@index([rank])
+  @@index([level])
+}
+
+enum Rank {
+  E
+  D
+  C
+  B
+  A
+  S
+}
+
+// ─── Stats ────────────────────────────────────────────────────────────────────
+
+model UserStat {
+  id       String   @id @default(cuid())
+  userId   String
+  stat     StatType
+  level    Int      @default(1)
+  xp       Int      @default(0)
+  xpToNext Int      @default(100)
+  updatedAt DateTime @updatedAt
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  history StatHistory[]
+
+  @@unique([userId, stat])
+  @@index([userId])
+}
+
+model StatHistory {
+  id         String   @id @default(cuid())
+  userStatId String
+  xpDelta    Int
+  reason     String?
+  recordedAt DateTime @default(now())
+
+  userStat UserStat @relation(fields: [userStatId], references: [id], onDelete: Cascade)
+
+  @@index([userStatId])
+  @@index([recordedAt])
+}
+
+enum StatType {
+  STRENGTH
+  INTELLIGENCE
+  STAMINA
+  DISCIPLINE
+  AGILITY
+  CHARISMA
+  CREATIVITY
+}
+
+// ─── Quest Templates ──────────────────────────────────────────────────────────
+
+model QuestTemplate {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  category    QuestCategory
+  difficulty  Difficulty    @default(NORMAL)
+  xpReward    Int           @default(50)
+  statRewards Json
+  isSystem    Boolean       @default(true)
+  creatorId   String?
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+
+  creator     User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  dailyQuests DailyQuest[]
+
+  @@index([category])
+  @@index([isSystem])
+}
+
+enum QuestCategory {
+  FITNESS
+  MIND
+  HEALTH
+  SOCIAL
+  CREATIVITY
+  DISCIPLINE
+  LEARNING
+}
+
+enum Difficulty {
+  EASY
+  NORMAL
+  HARD
+  EPIC
+}
+
+// ─── Daily Quests ─────────────────────────────────────────────────────────────
+
+model DailyQuest {
+  id          String        @id @default(cuid())
+  userId      String
+  templateId  String?
+  title       String
+  description String?
+  category    QuestCategory
+  difficulty  Difficulty    @default(NORMAL)
+  xpReward    Int           @default(50)
+  statRewards Json
+  questDate   DateTime
+  completedAt DateTime?
+  streakBonus Int           @default(0)
+  proofUrl    String?
+  notes       String?
+  createdAt   DateTime      @default(now())
+
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template QuestTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+
+  @@index([userId, questDate])
+  @@index([userId, completedAt])
+}
+
+// ─── XP History ───────────────────────────────────────────────────────────────
+
+model XpHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  delta     Int
+  source    XpSource
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum XpSource {
+  QUEST_COMPLETE
+  STREAK_BONUS
+  ACHIEVEMENT
+  DECAY
+  ADMIN
+}
+
+// ─── Achievements ─────────────────────────────────────────────────────────────
+
+model Achievement {
+  id          String @id @default(cuid())
+  key         String @unique
+  title       String
+  description String
+  iconUrl     String?
+  xpReward    Int     @default(0)
+  rarity      Rarity  @default(COMMON)
+
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+}
+
+enum Rarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+// ─── Social ───────────────────────────────────────────────────────────────────
+
+model Friendship {
+  id          String           @id @default(cuid())
+  initiatorId String
+  receiverId  String
+  status      FriendshipStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  initiator User @relation("FriendshipInitiator", fields: [initiatorId], references: [id], onDelete: Cascade)
+  receiver  User @relation("FriendshipReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([initiatorId, receiverId])
+  @@index([initiatorId])
+  @@index([receiverId])
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}
+
+// ─── Notifications ────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  body      String?
+  data      Json?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  LEVEL_UP
+  ACHIEVEMENT
+  FRIEND_REQUEST
+  FRIEND_ACCEPTED
+  STREAK_MILESTONE
+  DECAY_WARNING
+  QUEST_REMINDER
+  SYSTEM
+}
+
+// ─── Activity Log ─────────────────────────────────────────────────────────────
+
+model ActivityLog {
+  id        String       @id @default(cuid())
+  userId    String
+  type      ActivityType
+  title     String
+  metadata  Json?
+  createdAt DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum ActivityType {
+  QUEST_COMPLETED
+  LEVEL_UP
+  ACHIEVEMENT_UNLOCKED
+  STREAK_MILESTONE
+  FRIEND_ADDED
+  RANK_UP
+  STAT_LEVEL_UP
+}

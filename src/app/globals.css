@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Solo Leveling / System theme palette */
+  --color-sys-bg:          #050810;
+  --color-sys-surface:     #0a0f1e;
+  --color-sys-surface-2:   #0d1528;
+  --color-sys-border:      #1e2d4a;
+  --color-sys-cyan:        #00d4ff;
+  --color-sys-cyan-dim:    #0089b3;
+  --color-sys-blue:        #3b82f6;
+  --color-sys-purple:      #8b5cf6;
+  --color-sys-gold:        #f59e0b;
+  --color-sys-red:         #ef4444;
+  --color-sys-green:       #10b981;
+  --color-sys-text:        #e2e8f0;
+  --color-sys-text-muted:  #64748b;
+  --color-sys-glow:        rgba(0, 212, 255, 0.15);
+}
+
+:root {
+  --background: #050810;
+  --foreground: #e2e8f0;
+}
+
+* {
+  box-sizing: border-box;
+  border-color: #1e2d4a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans, "Inter", system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #050810;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e2d4a;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00d4ff44;
+}
+
+/* ── Glow Utilities ── */
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), 0 0 40px rgba(0, 212, 255, 0.1);
+}
+.glow-cyan-sm {
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+}
+.glow-text-cyan {
+  text-shadow: 0 0 12px rgba(0, 212, 255, 0.8);
+}
+.glow-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), 0 0 40px rgba(139, 92, 246, 0.1);
+}
+.glow-gold {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3), 0 0 40px rgba(245, 158, 11, 0.1);
+}
+.glow-red {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), 0 0 40px rgba(239, 68, 68, 0.1);
+}
+
+/* ── Glassmorphism ── */
+.glass {
+  background: rgba(10, 15, 30, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(30, 45, 74, 0.6);
+}
+.glass-hover:hover {
+  background: rgba(13, 21, 40, 0.85);
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+/* ── HUD scanlines overlay ── */
+.hud-scanlines::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.015) 2px,
+    rgba(0, 0, 0, 0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Animated gradient border ── */
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(0, 212, 255, 0.3); }
+  50%       { border-color: rgba(0, 212, 255, 0.7); }
+}
+.border-animated {
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+/* ── XP bar shimmer ── */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  animation: shimmer 2s infinite;
+}
+
+/* ── Number counter pulse ── */
+@keyframes number-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.7; color: #00d4ff; }
+}
+
+/* ── Rank badge gradient map ── */
+.rank-e  { background: linear-gradient(135deg, #374151, #6b7280); }
+.rank-d  { background: linear-gradient(135deg, #1e3a5f, #3b82f6); }
+.rank-c  { background: linear-gradient(135deg, #065f46, #10b981); }
+.rank-b  { background: linear-gradient(135deg, #3b0764, #8b5cf6); }
+.rank-a  { background: linear-gradient(135deg, #78350f, #f59e0b); }
+.rank-s  { background: linear-gradient(135deg, #7f1d1d, #ef4444); }
+
+/* ── Quest complete flash ── */
+@keyframes quest-flash {
+  0%   { opacity: 0; transform: scale(0.95); }
+  20%  { opacity: 1; transform: scale(1.02); }
+  80%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.98); }
+}
+.quest-flash {
+  animation: quest-flash 1.5s ease forwards;
+}
+
+/* ── Input styles ── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #e2e8f0;
+  -webkit-box-shadow: 0 0 0 1000px #0a0f1e inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
