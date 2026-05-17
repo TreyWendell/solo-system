@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Sidebar } from "@/components/layout/sidebar";
+import { BottomNav } from "@/components/layout/bottom-nav";
 import type { PublicUser } from "@/types";
 
 export default async function DashboardLayout({
@@ -38,9 +39,10 @@ export default async function DashboardLayout({
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar user={publicUser as PublicUser} unreadCount={_count.notifications} />
-      <main className="flex-1 ml-64 overflow-y-auto">
-        <div className="min-h-screen p-6 lg:p-8">{children}</div>
+      <main className="flex-1 md:ml-64 overflow-y-auto">
+        <div className="min-h-screen p-4 md:p-6 lg:p-8 pb-20 md:pb-6 lg:pb-8">{children}</div>
       </main>
+      <BottomNav />
     </div>
   );
 }

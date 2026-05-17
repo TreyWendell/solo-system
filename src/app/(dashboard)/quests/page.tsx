@@ -47,15 +47,15 @@ export default async function QuestsPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         {[
           { label: "Completed", value: `${completedCount}/${quests.length}`, color: "#10b981" },
           { label: "XP Earned", value: `${earnedXp.toLocaleString()}`, color: "#00d4ff" },
           { label: "XP Available", value: `${totalXpAvailable.toLocaleString()}`, color: "#f59e0b" },
         ].map(({ label, value, color }) => (
-          <div key={label} className="glass rounded-xl p-4 border border-[#1e2d4a] text-center">
-            <div className="text-2xl font-black font-mono" style={{ color }}>{value}</div>
-            <div className="text-xs text-[#64748b] mt-1 tracking-wider uppercase">{label}</div>
+          <div key={label} className="glass rounded-xl p-3 sm:p-4 border border-[#1e2d4a] text-center">
+            <div className="text-lg sm:text-2xl font-black font-mono truncate" style={{ color }}>{value}</div>
+            <div className="text-[10px] sm:text-xs text-[#64748b] mt-1 tracking-wider uppercase">{label}</div>
           </div>
         ))}
       </div>

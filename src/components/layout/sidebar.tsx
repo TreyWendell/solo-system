@@ -39,7 +39,7 @@ export function Sidebar({ user, unreadCount = 0 }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 flex flex-col glass border-r border-[#1e2d4a] z-40">
+    <aside className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 glass border-r border-[#1e2d4a] z-40">
       {/* Logo */}
       <div className="p-6 border-b border-[#1e2d4a]">
         <Link href="/dashboard" className="flex items-center gap-2 group">
