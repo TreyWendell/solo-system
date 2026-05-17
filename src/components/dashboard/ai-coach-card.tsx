@@ -4,14 +4,17 @@ import { getProgressCoaching } from "@/actions/ai";
 
 interface AiCoachCardProps {
   userId: string;
+  isAdmin?: boolean;
 }
 
-export async function AiCoachCard({ userId }: AiCoachCardProps) {
-  const coaching = await unstable_cache(
-    () => getProgressCoaching(userId),
-    [`coach-${userId}`],
-    { revalidate: 3600 }
-  )();
+export async function AiCoachCard({ userId, isAdmin }: AiCoachCardProps) {
+  const coaching = isAdmin
+    ? await getProgressCoaching(userId)
+    : await unstable_cache(
+        () => getProgressCoaching(userId),
+        [`coach-${userId}`],
+        { revalidate: 3600 }
+      )();
 
   return (
     <div className="glass rounded-xl p-5 border border-[#8b5cf6]/30 relative overflow-hidden">

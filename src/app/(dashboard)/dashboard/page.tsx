@@ -35,7 +35,7 @@ export default async function DashboardPage() {
       select: {
         id: true, username: true, displayName: true, avatarUrl: true,
         level: true, totalXp: true, rank: true, currentStreak: true,
-        longestStreak: true, createdAt: true, bio: true, isPublic: true,
+        longestStreak: true, createdAt: true, bio: true, isPublic: true, isAdmin: true,
       },
     }),
     db.userStat.findMany({ where: { userId }, orderBy: { stat: "asc" } }),
@@ -164,7 +164,7 @@ export default async function DashboardPage() {
         <div className="space-y-6">
           {/* AI Coach */}
           <Suspense fallback={<AiCoachSkeleton />}>
-            <AiCoachCard userId={userId} />
+            <AiCoachCard userId={userId} isAdmin={user.isAdmin} />
           </Suspense>
 
           {/* Weekly chart */}
